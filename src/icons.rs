@@ -1,4 +1,3 @@
-#[derive(Eq, Hash, PartialEq)]
 pub enum IconType {
     None,
     Directory,
