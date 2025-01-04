@@ -33,20 +33,23 @@ fn lls() -> i32 {
     
     for entry in directory_entries {
         let permission_effects = permissions::permission_effects_for_direntry(&entry);
-        let file_icon: IconType = 
-            if entry.file_type().unwrap().is_dir() {
-                IconType::Directory
-            } else if permission_effects.no_access {
-                IconType::NoAccess
-            } else if permission_effects.executable {
-                IconType::Executable
-            } else if permission_effects.no_write {
-                IconType::NoWrite
-            } else {
-                IconType::None
-            };
+
+        let mut file_icons : String = String::from("");
+        let is_dir = entry.file_type().unwrap().is_dir();
+
+        if is_dir {
+           file_icons.push_str(get_icon_by_type(IconType::Directory).as_str());
+        }
+
+        if permission_effects.no_access {
+            file_icons.push_str(get_icon_by_type(IconType::NoAccess).as_str());
+        } else if permission_effects.no_write {
+            file_icons.push_str(get_icon_by_type(IconType::NoWrite).as_str());
+        } else if !is_dir && permission_effects.executable {
+            file_icons.push_str(get_icon_by_type(IconType::Executable).as_str());
+        }
         
-        print!("[{} {}] ", get_icon_by_type(file_icon), entry.file_name().to_str().unwrap());
+        print!("[{}{}{}] ", file_icons, if !file_icons.is_empty() { " " } else { "" }, entry.file_name().to_str().unwrap());
     }
 
     print!("\n");

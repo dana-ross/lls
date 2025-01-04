@@ -1,5 +1,4 @@
 pub enum IconType {
-    None,
     Directory,
     Executable,
     NoWrite,
@@ -8,7 +7,6 @@ pub enum IconType {
 
 pub fn get_icon_by_type(icon_type: IconType) -> String {
     return match icon_type {
-        IconType::None => "",
         IconType::Directory => "📁",
         IconType::Executable => "⚙️ ",
         IconType::NoWrite => "🔏",
