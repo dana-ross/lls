@@ -1,15 +1,17 @@
+mod icons;
+mod permissions;
+
 use std::env;
 use std::process;
 use std::fs;
 use std::fs::DirEntry;
 use std::cmp::Ordering;
 use std::ffi::OsStr;
+use icons::IconType;
+
+use icons::get_icon_by_type;
 
 type DirEntryCollection = Vec<fs::DirEntry>;
-struct DirContents {
-    subdirectories : DirEntryCollection,
-    files : DirEntryCollection
-}
 
 fn main() {
     process::exit(lls());
@@ -29,11 +31,22 @@ fn lls() -> i32 {
 
     let directory_entries = marshall_directory_entries(contents);
     
-    for entry in directory_entries.subdirectories {
-        print!("[📁 {}] ", entry.file_name().to_str().unwrap());
-    }
-    for entry in directory_entries.files {
-        print!("{} ", entry.file_name().to_str().unwrap());
+    for entry in directory_entries {
+        let permission_effects = permissions::permission_effects_for_direntry(&entry);
+        let file_icon: IconType = 
+            if entry.file_type().unwrap().is_dir() {
+                IconType::Directory
+            } else if permission_effects.no_access {
+                IconType::NoAccess
+            } else if permission_effects.executable {
+                IconType::Executable
+            } else if permission_effects.no_write {
+                IconType::NoWrite
+            } else {
+                IconType::None
+            };
+        
+        print!("[{} {}] ", get_icon_by_type(file_icon), entry.file_name().to_str().unwrap());
     }
 
     print!("\n");
@@ -41,32 +54,33 @@ fn lls() -> i32 {
     return 0;
 }
 
-fn marshall_directory_entries(contents: fs::ReadDir) -> DirContents {
-    let mut subdirectories : DirEntryCollection = vec!();
+fn marshall_directory_entries(contents: fs::ReadDir) -> DirEntryCollection {
     let mut files : DirEntryCollection = vec!();
 
     for entry in contents {
         let entry = entry.unwrap();
-        if entry.file_type().unwrap().is_dir() {
-            subdirectories.push(entry);
-        } else {
             files.push(entry);
-        }
     }
 
-    subdirectories.sort_by(sort_direntries);
+    files.sort_by(sort_direntries);
 
-    return DirContents {
-        subdirectories: subdirectories,
-        files: files
-    };
-
+    return files;
 }
 
 fn sort_direntries(a: &DirEntry, b: &DirEntry) -> Ordering {
     let a_filename = a.file_name();
     let b_filename = b.file_name();
-    return sort_filenames(&a_filename.as_os_str(), &b_filename.as_os_str());
+
+    let a_is_dir = a.file_type().unwrap().is_dir();
+    let b_is_dir = b.file_type().unwrap().is_dir();
+
+    if a_is_dir && !b_is_dir {
+        return Ordering::Less;
+    } else if b_is_dir && !a_is_dir {
+        return Ordering::Greater;
+    } else {
+        return sort_filenames(&a_filename.as_os_str(), &b_filename.as_os_str());
+    }
 }
 
 fn sort_filenames(a: &OsStr, b: &OsStr) -> Ordering {
