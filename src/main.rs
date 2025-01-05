@@ -1,18 +1,30 @@
 mod icons;
 mod permissions;
 mod massage_direntries;
+mod constants;
 
 use std::env;
 use std::process;
 use std::fs;
 use icons::get_icons_for_direntry;
 use massage_direntries::marshall_directory_entries;
+use clap::Parser;
+
+#[derive(Parser)]
+#[command(name = constants::APP_NAME)]
+#[command(version = constants::RELEASE_VERSION)]
+#[command(about = constants::SHORT_DESCRIPTION, long_about = constants::LONG_DESCRIPTION)]
+struct Args {
+
+}
 
 fn main() {
     process::exit(lls());
 }
 
 fn lls() -> i32 {
+    let args = Args::parse();
+
     let current_dir = match env::current_dir() {
         Ok(path) => path,
         Err(_) => { println!("Problem getting the current directory");return 1;}
