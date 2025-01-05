@@ -1,7 +1,7 @@
 use std::fs::DirEntry;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
-use users::{get_effective_uid, get_effective_gid};
+use uzers::{get_effective_uid, get_effective_gid};
 
 pub struct PermissionEffects {
     pub no_access: bool,
