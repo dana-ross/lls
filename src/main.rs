@@ -7,9 +7,7 @@ use std::fs;
 use std::fs::DirEntry;
 use std::cmp::Ordering;
 use std::ffi::OsStr;
-use icons::IconType;
-
-use icons::get_icon_by_type;
+use icons::get_icons_for_direntry;
 
 type DirEntryCollection = Vec<fs::DirEntry>;
 
@@ -33,21 +31,7 @@ fn lls() -> i32 {
     
     for entry in directory_entries {
         let permission_effects = permissions::permission_effects_for_direntry(&entry);
-
-        let mut file_icons : String = String::from("");
-        let is_dir = entry.file_type().unwrap().is_dir();
-
-        if is_dir {
-           file_icons.push_str(get_icon_by_type(IconType::Directory).as_str());
-        }
-
-        if permission_effects.no_access {
-            file_icons.push_str(get_icon_by_type(IconType::NoAccess).as_str());
-        } else if permission_effects.no_write {
-            file_icons.push_str(get_icon_by_type(IconType::NoWrite).as_str());
-        } else if !is_dir && permission_effects.executable {
-            file_icons.push_str(get_icon_by_type(IconType::Executable).as_str());
-        }
+        let file_icons = get_icons_for_direntry(&entry, permission_effects);
         
         print!("[{}{}{}] ", file_icons, if !file_icons.is_empty() { " " } else { "" }, entry.file_name().to_str().unwrap());
     }
