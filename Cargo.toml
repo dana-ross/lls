@@ -8,3 +8,9 @@ users = "0.11.0"
 
 [[bin]]
 name="lls"
+
+[profile.release]
+lto=true
+debug-assertions=false
+opt-level=3
+codegen-units=1
