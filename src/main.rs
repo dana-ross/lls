@@ -17,11 +17,15 @@ use clap::Parser;
 #[command(version = constants::RELEASE_VERSION)]
 #[command(about = constants::SHORT_DESCRIPTION, long_about = constants::LONG_DESCRIPTION)]
 struct Args {
+<<<<<<< HEAD
     path: Option<String>,
 
     /// use a long listing format
     #[arg(short, long, default_value_t = false)]
     long: bool,
+=======
+
+>>>>>>> 7170beb9638627b98fdac4281bb6ec3dca34e55b
 }
 
 fn main() {
@@ -31,7 +35,11 @@ fn main() {
 fn lls() -> i32 {
     let args = Args::parse();
 
+<<<<<<< HEAD
     let path = match get_path(&args) {
+=======
+    let current_dir = match env::current_dir() {
+>>>>>>> 7170beb9638627b98fdac4281bb6ec3dca34e55b
         Ok(path) => path,
         Err(_) => { println!("Problem getting the target directory");return 1;}
     };
