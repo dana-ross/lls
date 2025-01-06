@@ -3,7 +3,7 @@ use std::ffi::OsStr;
 use std::fs::DirEntry;
 use std::fs;
 
-type DirEntryCollection = Vec<fs::DirEntry>;
+pub type DirEntryCollection = Vec<fs::DirEntry>;
 
 pub fn marshall_directory_entries(contents: fs::ReadDir) -> DirEntryCollection {
     let mut files : DirEntryCollection = vec!();
