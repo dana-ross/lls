@@ -1,5 +1,7 @@
 use crate::permissions::PermissionEffects;
+use crate::constants::*;
 use std::fs::DirEntry;
+use console::Emoji;
 
 pub enum IconType {
     Directory,
@@ -11,11 +13,11 @@ pub enum IconType {
 
 pub fn get_icon_by_type(icon_type: IconType) -> String {
     return match icon_type {
-        IconType::Directory => "📁",
-        IconType::Symlink => "🔗",
-        IconType::Executable => "⚙️ ",
-        IconType::NoWrite => "🔏",
-        IconType::NoAccess => "🚫"
+        IconType::Directory => Emoji("📁", EMOJI_FALLBACK_DIRECTORY),
+        IconType::Symlink => Emoji("🔗", "=>"),
+        IconType::Executable => Emoji("⚙️ ", "Exe"),
+        IconType::NoWrite => Emoji("🔏", "RO"),
+        IconType::NoAccess => Emoji("🚫", "No"),
     }.to_string();
 }
 
