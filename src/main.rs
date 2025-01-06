@@ -55,6 +55,8 @@ fn lls() -> i32 {
         }
     }
     
+    println!("");
+
     return 0;
 }
 
@@ -63,7 +65,8 @@ fn short_listing(entry: &fs::DirEntry, file_icons: &str) -> () {
 }
 
 fn long_listing(entry: &fs::DirEntry, file_icons: &str) -> () {
-    println!("[{}{}{}] ", file_icons, if !file_icons.is_empty() { " " } else { "" }, entry.file_name().to_str().unwrap());
+    let file_size = entry.metadata().unwrap().len();
+    println!("{} {:12} {:10} {}{}", permissions::format_permissions(entry), file_icons, file_size, if !file_icons.is_empty() { " " } else { "" }, entry.file_name().to_str().unwrap());
 }
 
 fn get_path(args: &Args) -> Result<PathBuf, Error> {
