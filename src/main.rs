@@ -1,6 +1,7 @@
 mod icons;
 mod permissions;
 mod massage_direntries;
+mod constants;
 
 use std::env;
 use std::process;

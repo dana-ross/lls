@@ -13,4 +13,5 @@ opt-level=3
 codegen-units=1
 
 [dependencies]
+console = "0.15.10"
 uzers = "0.12.1"
